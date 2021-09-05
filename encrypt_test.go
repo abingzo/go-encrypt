@@ -23,5 +23,5 @@ func TestEncodeAndDecode(t *testing.T) {
 }
 
 func TestExm(t *testing.T) {
-	RsaExamples()
+	shaExamples()
 }

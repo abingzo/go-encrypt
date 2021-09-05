@@ -9,9 +9,10 @@ type Encrypted interface {
 }
 
 type Abstracted interface {
-	Md5Coder()
-	Sha256Coder()
-	Sha512Coder()
+	Md5Coder(ptTyp Mode) *md5Coder
+	Sha1Coder(ptTyp Mode) *shaCoder
+	Sha256Coder(ptTyp Mode) *shaCoder
+	Sha512Coder(ptTyp Mode) *shaCoder
 	EccCoder()
 }
 
@@ -24,6 +25,20 @@ const (
 	BitSize1024 Mode = 2 << (9 + iota)
 	BitSize2048
 	BitSize4096
+)
+
+// encode type
+// 编码的类型
+const (
+	BASE64 Mode = iota
+	HEX
+	SOURCE
+)
+
+const (
+	SHA1 Mode = iota
+	SHA256
+	SHA512
 )
 
 type Mode int
@@ -39,7 +54,7 @@ func (c *coder) GetEncrypted() Encrypted {
 }
 
 func (c *coder) GetAbstract() Abstracted {
-	panic("implement me")
+	return Abstracted(&abstracted{})
 }
 
 type encrypted struct {}
@@ -57,5 +72,38 @@ func (e *encrypted) AesCoder() {
 }
 
 func (e *encrypted) DesCoder() {
+	panic("implement me")
+}
+
+type abstracted struct {}
+
+func (a *abstracted) Md5Coder(ptTyp Mode) *md5Coder {
+	return &md5Coder{
+		typ:    ptTyp,
+	}
+}
+
+func (a *abstracted) Sha1Coder(ptTyp Mode) *shaCoder {
+	return &shaCoder{
+		typ:     ptTyp,
+		shaType: SHA1,
+	}
+}
+
+func (a *abstracted) Sha256Coder(ptTyp Mode) *shaCoder {
+	return &shaCoder{
+		typ:     ptTyp,
+		shaType: SHA256,
+	}
+}
+
+func (a *abstracted) Sha512Coder(ptTyp Mode) *shaCoder {
+	return &shaCoder{
+		typ:     ptTyp,
+		shaType: SHA512,
+	}
+}
+
+func (a *abstracted) EccCoder() {
 	panic("implement me")
 }
