@@ -35,7 +35,3 @@ func TestAesEncodeAndDecode(t *testing.T) {
 	t.Log(result1)
 	t.Log(aes.AppendCipher(result1).Decrypted()[0])
 }
-
-func TestExm(t *testing.T) {
-	shaExamples()
-}

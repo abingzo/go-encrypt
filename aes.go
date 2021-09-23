@@ -24,15 +24,29 @@ type aesCoder struct {
 // 设置一个新的key，根据设定的keySize分割
 // 可能会设定一个err
 func (a *aesCoder) Init(key []byte) *aesCoder {
-	a.Reset()
+	a.ResetAll()
+	if key == nil || len(key) < a.KeySize() {
+		a.err = aes.KeySizeError(a.keySize)
+		return a
+	}
 	a.aesBlock, a.err = aes.NewCipher(key[:a.keySize])
 	return a
 }
 
-func (a *aesCoder) Reset() *aesCoder {
+func (a *aesCoder) ResetAll() *aesCoder {
 	a.srcTexts = make([]byte,0)
 	a.cipherTexts = make([][]byte,1)
 	a.err = nil
+	return a
+}
+
+func (a *aesCoder) ResetSrcTexts() *aesCoder {
+	a.srcTexts = make([]byte,0)
+	return a
+}
+
+func (a *aesCoder) ResetCipherTexts() *aesCoder {
+	a.cipherTexts = make([][]byte,1)
 	return a
 }
 
