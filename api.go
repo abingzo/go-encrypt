@@ -1,10 +1,13 @@
 package go_encrypt
 
-import "io"
+import (
+	"github.com/abingzo/go-encrypt/padding"
+	"io"
+)
 
 type Encrypted interface {
 	RsaCoder(bitSize Mode,pub,pri io.WriteCloser) *rsaCoder
-	AesCoder()
+	AesCoder(typ Mode) *aesCoder
 	DesCoder()
 }
 
@@ -41,6 +44,13 @@ const (
 	SHA512
 )
 
+// aes mode
+const (
+	AES128 Mode = 8 * (2 + iota)
+	AES192
+	AES256
+)
+
 type Mode int
 
 func NewCoder() Coder {
@@ -67,9 +77,28 @@ func (e *encrypted) RsaCoder(bitSize Mode,pub,pri io.WriteCloser) *rsaCoder {
 	}
 }
 
-func (e *encrypted) AesCoder() {
-	panic("implement me")
+// 默认使用pkcs7方式填充
+// 根据选项初始化Aes128/192/256
+func (e *encrypted) AesCoder(typ Mode) *aesCoder {
+	tmp := &aesCoder{
+		padding:     padding.PaddingForPkcs7,
+		uPadding:    padding.UnPaddingForPkcs7,
+	}
+	switch typ {
+	case AES128:
+		tmp.keySize = AES128
+		return tmp
+	case AES192:
+		tmp.keySize = AES192
+		return tmp
+	case AES256:
+		tmp.keySize = AES256
+		return tmp
+	default:
+		return nil
+	}
 }
+
 
 func (e *encrypted) DesCoder() {
 	panic("implement me")

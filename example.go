@@ -86,3 +86,6 @@ func shaExamples()  {
 	}
 	fmt.Println(string(sha512ResultAppend))
 }
+
+func aesExamples() {
+}
